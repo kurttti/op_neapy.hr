@@ -7,318 +7,154 @@
   <meta name="description" content="neapy.hr автоматизирует первичные интервью: кандидат отвечает когда удобно, HR получает транскрипты, оценки и шорт-лист." />
   <meta name="theme-color" content="#7ccfff" />
 
+  <!-- Чистая "n" как фавикон -->
+  <link rel="icon" sizes="any" type="image/svg+xml" href='data:image/svg+xml;utf8,
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+    <rect width="64" height="64" rx="14" fill="%2377b7ff"/>
+    <text x="50%" y="56%" text-anchor="middle" dominant-baseline="middle"
+          font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="44"
+          fill="white">n</text>
+  </svg>'>
+
   <style>
-    :root {
-      --bg: #0b1020;
-      --bg-1: #0f1730;
-      --bg-2: #121b3a;
-      --fg: #f4f7ff;
-      --muted: #b7c4e8;
-      --lilac: #c6b7ff;
-      --mint: #a7f1d9;
-      --aqua: #8de6ff;
-      --blue: #77b7ff;
-      --border: #2a3563;
-      --radius: 18px;
-      --shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+    /* ====== Tokens: мягкая, дружелюбная тёмная тема ====== */
+    :root{
+      --bg: #0b1020;           /* базовый фон */
+      --bg-1:#0f1730;          /* карточки */
+      --bg-2:#121b3a;          /* выделения */
+      --fg:#f4f7ff;            /* основной светлый текст */
+      --muted:#b7c4e8;         /* вторичный */
+      --lilac:#c6b7ff;         /* лаванда */
+      --mint:#a7f1d9;          /* мята */
+      --aqua:#8de6ff;          /* аква */
+      --blue:#77b7ff;          /* голубой пастельный */
+      --border:#2a3563;
+      --radius:18px;
+      --shadow: 0 18px 50px rgba(0,0,0,.35);
       --t: 320ms cubic-bezier(.18,.8,.2,1);
     }
 
-    *,
-    *::before,
-    *::after {
-      box-sizing: border-box;
-    }
-
-    html,
-    body {
-      height: 100%;
-      margin: 0;
-      color: var(--fg);
-      background: var(--bg);
+    /* ====== База ====== */
+    *,*::before,*::after{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; color:var(--fg); background: var(--bg);
       font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Inter, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-      line-height: 1.55;
-      -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
+      line-height:1.55; -webkit-font-smoothing:antialiased; overflow-x:hidden;
     }
+    a{color:inherit;text-decoration:none}
+    img{display:block;max-width:100%}
+    .container{max-width:1160px;margin:0 auto;padding:0 24px}
 
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    .container {
-      max-width: 1160px;
-      margin: 0 auto;
-      padding: 0 24px;
-    }
-
-    /* Анимированный фон */
-    body {
-      position: relative;
-    }
-
-    .wind-bg {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      width: 100%;
-      pointer-events: none;
-    }
-
-    .wind-bg::before,
-    .wind-bg::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      width: 50%;
-      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath d='M0 50 Q 25 25 50 50 T 100 50' fill='none' stroke='%231a2b4d' stroke-width='2'/%3E%3C/svg%3E") repeat-y;
-      opacity: 0.3;
-      animation: drift 12s linear infinite;
-    }
-
-    .wind-bg::before {
-      left: 0;
-      animation-direction: normal;
-    }
-
-    .wind-bg::after {
-      right: 0;
-      animation-direction: reverse;
-    }
-
-    @keyframes drift {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
-    }
-
-    /* Основная верстка */
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      border-bottom: 1px solid var(--border);
-      background: linear-gradient(180deg, rgba(17, 26, 56, 0.75), rgba(17, 26, 56, 0.45));
+    /* ====== Шапка ====== */
+    header{
+      position:sticky; top:0; z-index:50; border-bottom:1px solid var(--border);
+      background:linear-gradient(180deg, rgba(17,26,56,.75), rgba(17,26,56,.45));
       backdrop-filter: blur(12px) saturate(140%);
     }
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+    .logo{display:flex;gap:10px;align-items:center;font-weight:900}
+    .logo-mark{width:38px;height:38px;border-radius:12px;background:linear-gradient(145deg, var(--blue), var(--aqua));display:grid;place-items:center;color:#04223a;font-weight:900}
+    .nav-links a{margin-left:24px;color:#e7edff;opacity:.9;font-weight:700}
+    .nav-links a:hover{opacity:1}
+    .mobile-toggle{display:none}
+    @media (max-width:860px){ .nav-links{display:none} .mobile-toggle{display:inline-flex} }
 
-    .nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px 0;
-    }
-
-    .logo {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      font-weight: 900;
-    }
-
-    .logo-mark {
-      width: 38px;
-      height: 38px;
-      border-radius: 12px;
-      background: linear-gradient(145deg, var(--blue), var(--aqua));
-      display: grid;
-      place-items: center;
-      color: #04223a;
-      font-weight: 900;
-    }
-
-    .nav-links a {
-      margin-left: 24px;
-      color: #e7edff;
-      opacity: 0.9;
-      font-weight: 700;
-    }
-
-    .nav-links a:hover {
-      opacity: 1;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 12px 20px;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      background: rgba(255, 255, 255, 0.05);
-      color: #f5f8ff;
-      font-weight: 700;
+    /* ====== Кнопки ====== */
+    .btn{
+      display:inline-flex;align-items:center;gap:10px; padding:12px 20px;
+      border-radius:999px; border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.05); color:#f5f8ff; font-weight:700;
       transition: transform var(--t), box-shadow var(--t), background var(--t), opacity var(--t);
-      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+      box-shadow: 0 10px 28px rgba(0,0,0,.22);
       will-change: transform;
     }
+    .btn:hover{ transform: translateY(-1px) }
+    .btn:active{ transform: translateY(0) }
 
-    .btn:hover {
-      transform: translateY(-1px);
-    }
-
-    .btn-primary {
+    .btn-primary{
       background: linear-gradient(90deg, #7db9ff 0%, #a7f1d9 50%, #c6b7ff 100%);
-      color: #0a1c2b;
-      font-weight: 800;
-      border-color: transparent;
-      box-shadow: 0 14px 34px rgba(125, 185, 255, 0.28);
+      color:#0a1c2b; font-weight:800; border-color:transparent;
+      box-shadow: 0 14px 34px rgba(125,185,255,.28);
     }
+    .btn-primary:hover{ box-shadow: 0 18px 42px rgba(125,185,255,.36) }
+    .btn-ghost{ background:rgba(255,255,255,.06) }
 
-    .card {
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.03));
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      backdrop-filter: blur(10px) saturate(140%);
-      box-shadow: var(--shadow);
+    /* ====== Карточки / сетки ====== */
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+      border:1px solid var(--border); border-radius:var(--radius);
+      backdrop-filter: blur(10px) saturate(140%); box-shadow:var(--shadow)
     }
+    .grid{display:grid;gap:22px}
+    .two{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .three{grid-template-columns:repeat(3,minmax(0,1fr))}
+    @media (max-width:980px){.two,.three{grid-template-columns:1fr}}
 
-    .grid {
-      display: grid;
-      gap: 22px;
+    /* ====== Hero ====== */
+    .hero{padding:74px 0 40px}
+    .pill{
+      display:inline-flex;align-items:center;gap:.6rem;
+      padding:8px 12px;border-radius:999px;border:1px solid var(--border);
+      background:rgba(255,255,255,.04); color:#dfe8ff; font-weight:800
     }
+    .badge{border-radius:10px;padding:4px 10px;font-weight:900;font-size:.74rem}
+    .badge-ok{background:#0e2530;color:#5ff3cf;border:1px solid #17424e}
 
-    .three {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
+    .title{font-size:clamp(28px,4.3vw,58px);line-height:1.05;letter-spacing:-.02em;font-weight:900;text-wrap:balance}
+    .title span{background:linear-gradient(90deg, var(--blue), var(--aqua), var(--mint));-webkit-background-clip:text;background-clip:text;color:transparent}
 
-    .hero {
-      padding: 74px 0 40px;
-    }
+    .sub{margin-top:14px;color:var(--muted);max-width:760px;font-size:clamp(16px,1.6vw,19px)}
+    .cta{margin-top:24px;display:flex;gap:12px;flex-wrap:wrap}
 
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.6rem;
-      padding: 8px 12px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.04);
-      color: #dfe8ff;
-      font-weight: 800;
-    }
+    /* ====== Ступени ====== */
+    .section-title{font-weight:900;font-size:clamp(22px,2.6vw,34px)}
+    .section-sub{color:var(--muted);max-width:760px;margin-top:8px}
+    .step{padding:18px;border-radius:18px;border:1px solid var(--border);
+      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+      display:flex;gap:16px; align-items:flex-start; transition: transform var(--t), background var(--t)}
+    .step:hover{ transform:translateY(-2px); background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.04)) }
+    .step-idx{width:36px;height:36px;border-radius:11px;background:linear-gradient(160deg, var(--blue), var(--mint));color:#062233;display:grid;place-items:center;font-weight:900;flex:0 0 36px}
 
-    .title {
-      font-size: clamp(28px, 4.3vw, 58px);
-      line-height: 1.05;
-      letter-spacing: -0.02em;
-      font-weight: 900;
-      text-wrap: balance;
-    }
+    /* ====== Мок интерфейса ====== */
+    .mock{border-radius:20px;border:1px solid var(--border);background:linear-gradient(180deg,#0f1632,#101b3b);overflow:hidden;box-shadow:var(--shadow)}
+    .mock-top{padding:10px 14px;background:linear-gradient(180deg,#131d40,#101738);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+    .dot{width:10px;height:10px;border-radius:50%}
+    .dot.red{background:#ff5f56}.dot.yellow{background:#ffbd2e}.dot.green{background:#27c93f}
+    .mock-body{padding:14px}
+    .table{width:100%;border-collapse:collapse}
+    .table th,.table td{padding:12px;border-bottom:1px solid var(--border);text-align:left;font-size:14px;color:#e7edff}
+    .score{font-weight:900;color:#8bc7ff}
 
-    .sub {
-      margin-top: 14px;
-      color: var(--muted);
-      max-width: 760px;
-      font-size: clamp(16px, 1.6vw, 19px);
-    }
+    .floating{position:absolute;right:-14px;bottom:-14px;transform:translateY(0);animation:float 7s ease-in-out infinite;width:min(340px,92%);border-radius:16px}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 
-    /* Цены */
-    .price {
-      padding: 20px;
-    }
+    /* ====== Прайс/FAQ/Футер ====== */
+    .price h3{margin:.2rem 0 0}
+    .price .num{font-size:34px;font-weight:900;color:#b0d5ff}
+    .price ul{margin:14px 0 0;padding:0;list-style:none}
+    .price li{display:flex;gap:10px;align-items:flex-start;margin:10px 0;color:#dfe6ff}
+    .check{width:18px;height:18px;border-radius:6px;background:#0e2530;border:1px solid #17424e;display:grid;place-items:center;color:#5ff3cf;font-weight:900;line-height:1}
 
-    .price h3 {
-      margin: 0.2rem 0 0;
-    }
+    details{background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));border:1px solid var(--border);border-radius:14px;padding:14px 16px}
+    summary{cursor:pointer;font-weight:800}
+    details p{color:#dfe6ff;margin:.6rem 0 0}
 
-    .price .num {
-      font-size: 34px;
-      font-weight: 900;
-      color: #b0d5ff;
-    }
+    footer{padding:56px 0;border-top:1px solid var(--border);background:linear-gradient(180deg,#0f1730,#0c1226)}
 
-    .price ul {
-      margin: 14px 0 0;
-      padding: 0;
-      list-style: none;
-    }
+    /* ====== Плавные появления ====== */
+    .reveal{opacity:0; transform: translateY(12px); transition: opacity var(--t), transform var(--t)}
+    .reveal.in{opacity:1; transform: translateY(0)}
 
-    .price li {
-      display: flex;
-      gap: 10px;
-      align-items: flex-start;
-      margin: 10px 0;
-      color: #dfe6ff;
-    }
-
-    .check {
-      width: 18px;
-      height: 18px;
-      border-radius: 6px;
-      background: #0e2530;
-      border: 1px solid #17424e;
-      display: grid;
-      place-items: center;
-      color: #5ff3cf;
-      font-weight: 900;
-      line-height: 1;
-    }
-
-    /* Безопасность */
-    .security-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-    }
-
-    .security-item {
-      margin: 0;
-    }
-
-    /* FAQ */
-    #faq {
-      margin-bottom: 120px; /* Расстояние до футера */
-    }
-
-    details {
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.03));
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 14px 16px;
-    }
-
-    summary {
-      cursor: pointer;
-      font-weight: 800;
-    }
-
-    details p {
-      color: #dfe6ff;
-      margin: 0.6rem 0 0;
-    }
-
-    /* Футер */
-    footer {
-      padding: 56px 0;
-      border-top: 1px solid var(--border);
-      background: linear-gradient(180deg, #0f1730, #0c1226);
-    }
-
-    /* Анимации */
-    .reveal {
-      opacity: 0;
-      transform: translateY(12px);
-      transition: opacity var(--t), transform var(--t);
-    }
-
-    .reveal.in {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .reveal {
-        transition: none;
-      }
+    /* Уважение к снижению анимаций */
+    @media (prefers-reduced-motion: reduce){
+      .bg-fabric::before,.bg-fabric::after,.floating{animation:none}
+      .reveal{transition:none}
     }
   </style>
 </head>
-<body class="wind-bg">
-  <div class="wind-bg"></div>
-
-  <!-- Шапка -->
+<body>
+  <!-- Header -->
   <header role="banner">
     <div class="container nav">
       <div class="logo">
@@ -332,9 +168,10 @@
         <a href="#faq">FAQ</a>
       </nav>
       <div class="cta">
+        <!-- Оставили один главный CTA -->
         <button class="btn btn-primary" onclick="document.getElementById('waitlist').showModal()">Список ожидания</button>
       </div>
-      <button class="mobile-toggle btn btn-ghost" aria-label="Меню">☰</button>
+      <button class="mobile-toggle btn btn-ghost" aria-label="Меню" onclick="toggleMenu()">☰</button>
     </div>
   </header>
 
@@ -342,7 +179,7 @@
   <section class="hero">
     <div class="container">
       <span class="pill">ИИ-интервью • Облако или On-Prem</span>
-      <h1 class="title reveal"><span>ИИ-собеседования, которые бережно экономят время HR</span></h1>
+      <h1 class="title reveal">ИИ-собеседования, которые <span>бережно экономят время HR</span></h1>
       <p class="sub reveal">Кандидат отвечает тогда, когда удобно ему. Вы получаете аккуратные транскрипты, оценки по вопросам и короткий шорт-лист — без лишних созвонов.</p>
       <div class="cta reveal">
         <a class="btn btn-primary" href="#contact">Посмотреть демо</a>
@@ -351,95 +188,173 @@
     </div>
   </section>
 
-  <!-- Как это работает -->
+  <!-- How it works -->
   <section id="how">
     <div class="container">
       <h2 class="section-title reveal">Как это работает</h2>
       <p class="section-sub reveal">Четыре шага от JD до уверенного решения — спокойно и последовательно.</p>
 
-      <div class="grid two" style="margin-top: 18px">
-        <!-- Шаги -->
+      <div class="grid two" style="margin-top:18px">
+        <div class="step reveal">
+          <div class="step-idx">1</div>
+          <div><h3>Создайте вакансию</h3><p class="muted">Вставьте JD — получайте набор структурных вопросов. Всё редактируемо.</p></div>
+        </div>
+        <div class="step reveal">
+          <div class="step-idx">2</div>
+          <div><h3>Поделитесь ссылкой</h3><p class="muted">Кандидаты проходят интервью в удобное время — с телефона или ноутбука.</p></div>
+        </div>
+        <div class="step reveal">
+          <div class="step-idx">3</div>
+          <div><h3>ИИ проводит интервью</h3><p class="muted">Голос/видео/текст. Транскрипты и скоринг формируются автоматически.</p></div>
+        </div>
+        <div class="step reveal">
+          <div class="step-idx">4</div>
+          <div><h3>Ревью и решение</h3><p class="muted">Ранжированный список, сильные стороны/риски и рекомендации по шагам.</p></div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Продукт -->
+  <!-- Product mock -->
   <section aria-label="Превью продукта">
     <div class="container grid two">
-      <!-- Мокап дашборда -->
+      <div>
+        <h2 class="section-title reveal">Дашборд для спокойного контроля</h2>
+        <p class="section-sub reveal">Активные роли, прогресс интервью и кого двигать дальше — на одном экране.</p>
+        <div class="grid" style="margin-top:16px">
+          <div class="pill reveal"><strong style="color:#c9f7e8">3× быстрее</strong> от отклика до оффера</div>
+          <div class="pill reveal"><strong style="color:#c9f7e8">100%</strong> единый набор вопросов</div>
+          <div class="pill reveal"><strong style="color:#ffe9a6">−70%</strong> времени на слоты и созвоны</div>
+        </div>
+      </div>
+
+      <div class="mock reveal" role="img" aria-label="Предпросмотр дашборда: вакансии и оценки кандидатов" style="position:relative">
+        <div class="mock-top">
+          <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+          <span style="margin-left:8px;color:#b8c7f2">neapy.hr — Dashboard</span>
+        </div>
+        <div class="mock-body">
+          <table class="table">
+            <thead><tr><th>Роль</th><th>Интервью</th><th>Средний балл</th><th>Статус</th></tr></thead>
+            <tbody>
+              <tr><td>Senior Python Engineer</td><td>42</td><td class="score">8.1</td><td><span class="badge" style="background:#0e2530;color:#5ff3cf;border:1px solid #17424e">Стабильный поток</span></td></tr>
+              <tr><td>Account Executive</td><td>27</td><td class="score">7.4</td><td><span class="badge" style="background:#2a2407;color:#ffe38a;border:1px solid #50420b">Нужен приток</span></td></tr>
+              <tr><td>Operations Manager</td><td>19</td><td class="score">7.9</td><td><span class="badge" style="background:#0e2530;color:#5ff3cf;border:1px solid #17424e">В графике</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="floating card">
+          <div style="padding:14px">
+            <strong>Лучшие кандидаты</strong>
+            <p style="color:#b9c8f0;margin:.3rem 0 0">Роль: Senior Python Engineer</p>
+            <ul style="list-style:none;margin:10px 0 0;padding:0">
+              <li style="display:flex;justify-content:space-between;margin:6px 0"><span>Елена П.</span><span class="score">8.8</span></li>
+              <li style="display:flex;justify-content:space-between;margin:6px 0"><span>Марк С.</span><span class="score">8.5</span></li>
+              <li style="display:flex;justify-content:space-between;margin:6px 0"><span>Прия Р.</span><span class="score">8.3</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- Возможности -->
+  <!-- Features -->
   <section id="features">
     <div class="container">
       <h2 class="section-title reveal">Возможности</h2>
       <p class="section-sub reveal">Автоматизируем рутину, оставляем решение за людьми.</p>
 
-      <div class="grid three" style="margin-top: 22px">
-        <!-- Карточки возможностей -->
+      <div class="grid three" style="margin-top:22px">
+        <div class="card reveal" style="padding:20px"><h4>Интервью любым форматом</h4><p class="muted">Голос, видео или текст. RU/EN на старте. Структурные и этичные промпты.</p></div>
+        <div class="card reveal" style="padding:20px"><h4>Транскрипты и скоринг</h4><p class="muted">Чистые расшифровки и баллы по вопросам. Плюсы, риски и follow-up.</p></div>
+        <div class="card reveal" style="padding:20px"><h4>Адаптивные сценарии</h4><p class="muted">Уточняющие вопросы на основе ответов — близко к живому диалогу.</p></div>
+        <div class="card reveal" style="padding:20px"><h4>Интеграции с ATS</h4><p class="muted">Экспорт, вебхуки и API для синхронизации с вашей системой.</p></div>
+        <div class="card reveal" style="padding:20px"><h4>Облако или on-prem</h4><p class="muted">Данные остаются у вас. Self-hosted режим по запросу.</p></div>
+        <div class="card reveal" style="padding:20px"><h4>Оплата за интервью</h4><p class="muted">Прозрачно и масштабируемо. Платите только за использование.</p></div>
       </div>
     </div>
   </section>
 
-  <!-- Цены -->
+  <!-- Pricing -->
   <section id="pricing">
     <div class="container">
       <h2 class="section-title reveal">Простые тарифы</h2>
       <p class="section-sub reveal">Начните с малого — масштабируйтесь, когда будете готовы.</p>
 
-      <div class="grid three" style="margin-top: 22px">
-        <div class="card price reveal">
-          <span class="badge">Starter</span>
+      <div class="grid three" style="margin-top:22px">
+        <div class="card price reveal" style="padding:20px">
+          <span class="badge" style="background:#111b3a;color:#b7c6ee;border:1px solid #2a3563">Starter</span>
           <h3>Попробовать</h3><p class="num">Бесплатно</p>
           <ul>
             <li><span class="check">✓</span> 5 ИИ-интервью / месяц</li>
             <li><span class="check">✓</span> Базовые транскрипты</li>
             <li><span class="check">✓</span> Экспорт CSV</li>
           </ul>
-          <a href="#contact" class="btn btn-primary">Начать</a>
+          <a href="#contact" class="btn btn-primary" style="margin-top:14px;display:inline-block">Начать</a>
         </div>
 
-        <div class="card price reveal" style="border: 2px solid #2a3563">
-          <span class="badge">Growth</span>
+        <div class="card price reveal" style="padding:20px;border:2px solid #2a3563">
+          <span class="badge" style="background:#111b3a;color:#dbe6ff;border:1px solid #2a3563">Growth</span>
           <h3>Масштаб</h3><p class="num">от 80 до 150 ₽<br>/интервью</p>
           <ul>
             <li><span class="check">✓</span> Безлимит по вакансиям</li>
             <li><span class="check">✓</span> Адаптивные сценарии и скоринг</li>
             <li><span class="check">✓</span> Вебхуки и API</li>
           </ul>
-          <a href="#contact" class="btn btn-primary">Выбрать Growth</a>
+          <a href="#contact" class="btn btn-primary" style="margin-top:14px;display:inline-block">Выбрать Growth</a>
         </div>
 
-        <div class="card price reveal">
-          <span class="badge">Enterprise</span>
+        <div class="card price reveal" style="padding:20px">
+          <span class="badge" style="background:#0e252f;color:#6ef2d2;border:1px solid #18424d">Enterprise</span>
           <h3>Контроль и безопасность</h3><p class="num">Обсуждается</p>
           <ul>
             <li><span class="check">✓</span> Self-hosted / on-prem</li>
             <li><span class="check">✓</span> SSO, DPA, аудит</li>
             <li><span class="check">✓</span> SLA и поддержка</li>
           </ul>
-          <a href="#contact" class="btn btn-primary">Связаться</a>
+          <a href="#contact" class="btn btn-primary" style="margin-top:14px;display:inline-block">Связаться</a>
         </div>
       </div>
 
-      <!-- Безопасность -->
-      <div class="card reveal" style="padding: 24px; margin-top: 40px;">
-        <div class="security-grid">
-          <div class="security-item">
+      <div class="card reveal" style="padding:24px; margin-top:40px">
+        <div class="grid three" style="grid-gap: 24px;">
+          <div>
             <h3>Privacy by design</h3>
-            <p>Роли и права, изоляция данных на уровне организации, TTL-политики хранения.</p>
+            <p class="muted">Роли и права, изоляция данных на уровне организации, TTL-политики хранения.</p>
           </div>
-          <div class="security-item">
+          <div>
             <h3>Владение данными</h3>
-            <p>Резидентность и экспорт под контролем. В on-prem записи остаются в периметре.</p>
+            <p class="muted">Резидентность и экспорт под контролем. В on-prem записи остаются в периметре.</p>
           </div>
-          <div class="security-item">
+          <div>
             <h3>Надёжность</h3>
-            <p>Очереди с ретраями, наблюдаемость и предсказуемые SLA.</p>
+            <p class="muted">Очереди с ретраями, наблюдаемость и предсказуемые SLA.</p>
           </div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact">
+    <div class="container">
+      <h2 class="section-title reveal">Посмотреть neapy.hr на ваших вакансиях</h2>
+      <p class="section-sub reveal">Пара деталей — и мы подготовим короткую демонстрацию под ваши роли.</p>
+      <form class="card reveal" style="padding:20px;max-width:720px" onsubmit="event.preventDefault();thankYou()">
+        <div class="grid two">
+          <label>Имя и фамилия<br><input required name="name" class="input" style="width:100%;padding:12px;border:1px solid var(--border);border-radius:14px;background:#0f1730;color:var(--fg)"></label>
+          <label>Рабочая почта<br><input required name="email" type="email" class="input" style="width:100%;padding:12px;border:1px solid var(--border);border-radius:14px;background:#0f1730;color:var(--fg)"></label>
+          <label>Компания<br><input name="company" class="input" style="width:100%;padding:12px;border:1px solid var(--border);border-radius:14px;background:#0f1730;color:var(--fg)"></label>
+          <label>Найм в месяц<br><input name="hires" class="input" style="width:100%;padding:12px;border:1px solid var(--border);border-radius:14px;background:#0f1730;color:var(--fg)"></label>
+        </div>
+        <label style="display:block;margin-top:12px">Какие роли нанимаете?<br>
+          <textarea name="roles" rows="4" class="input" style="width:100%;padding:12px;border:1px solid var(--border);border-radius:14px;background:#0f1730;color:var(--fg)"></textarea>
+        </label>
+        <div style="display:flex;gap:10px;align-items:center;margin-top:16px">
+          <button class="btn btn-primary" type="submit">Запросить демо</button>
+          <span class="muted" id="contact-msg" role="status" aria-live="polite"></span>
+        </div>
+      </form>
     </div>
   </section>
 
@@ -447,35 +362,82 @@
   <section id="faq">
     <div class="container">
       <h2 class="section-title reveal">FAQ</h2>
-      <div class="grid two" style="margin-top: 18px">
-        <!-- Вопросы -->
+      <div class="grid two" style="margin-top:18px">
+        <details class="reveal"><summary>Можно ли развернуть у себя?</summary><p>Да. Доступен self-hosted режим, чтобы хранить аудио и транскрипты в вашем периметре.</p></details>
+        <details class="reveal"><summary>Какие языки поддерживаются?</summary><p>RU/EN на старте. Мультиязычные интервью поддерживаются.</p></details>
+        <details class="reveal"><summary>Как рассчитывается стоимость?</summary><p>Оплата за интервью, скидки от объёма. Для Enterprise — индивидуальные условия.</p></details>
+        <details class="reveal"><summary>Интегрируется ли с нашим ATS?</summary><p>Да: экспорт, вебхуки и REST API. Нативные интеграции — в дорожной карте.</p></details>
       </div>
     </div>
   </section>
 
-  <!-- Контакты -->
-  <section id="contact">
-    <!-- Форма -->
-  </section>
-
-  <!-- Футер -->
+  <!-- Footer -->
   <footer role="contentinfo">
-    <div class="container" style="display: grid; gap: 24px; grid-template-columns: 2fr 1fr 1fr">
-      <!-- Колонки футера -->
+    <div class="container" style="display:grid;gap:24px;grid-template-columns:2fr 1fr 1fr">
+      <div>
+        <div class="logo"><div class="logo-mark">n</div><span>neapy.hr</span></div>
+        <p class="muted" style="margin-top:10px">ИИ-интервью, которые бережно экономят время команды.</p>
+      </div>
+      <div>
+        <strong>Продукт</strong>
+        <ul style="list-style:none;margin:10px 0 0;padding:0;color:#dfe6ff">
+          <li><a href="#how">Как это работает</a></li>
+          <li><a href="#features">Возможности</a></li>
+          <li><a href="#pricing">Цены</a></li>
+        </ul>
+      </div>
+      <div>
+        <strong>Компания</strong>
+        <ul style="list-style:none;margin:10px 0 0;padding:0;color:#dfe6ff">
+          <li><a href="#contact">Контакты</a></li>
+          <li><a href="#" onclick="document.getElementById('waitlist').showModal()">Список ожидания</a></li>
+          <li><a href="#" onclick="alert('Скоро будет')">Политика конфиденциальности</a></li>
+        </ul>
+      </div>
     </div>
-    <div class="container" style="margin-top: 24px; color: #b9c7f2; font-size: 0.92rem">
+    <div class="container" style="margin-top:24px;color:#b9c7f2;font-size:.92rem">
       © <span id="year"></span> neapy.hr — Все права защищены.
     </div>
   </footer>
 
-  <!-- Модальное окно списка ожидания -->
-  <dialog id="waitlist">
-    <!-- Форма -->
+  <!-- Waitlist modal -->
+  <dialog id="waitlist" style="border:none;border-radius:16px;padding:0;max-width:520px;width:92%">
+    <form method="dialog" class="card" style="padding:18px">
+      <h3 style="margin:0 0 6px 0">Список ожидания</h3>
+      <p class="muted" style="margin:0 0 10px 0">Сообщим, когда ваш регион будет открыт.</p>
+      <label>E-mail<br><input required class="input" style="width:100%;padding:12px;border:1px solid var(--border);border-radius:14px;background:#0f1730;color:var(--fg)"></label>
+      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:14px">
+        <button class="btn" value="cancel">Отмена</button>
+        <button class="btn btn-primary" value="submit" onclick="this.closest('dialog').close();alert('Спасибо! Вы в списке.')" >Присоединиться</button>
+      </div>
+    </form>
   </dialog>
 
   <script>
+    // Текущий год
     document.getElementById('year').textContent = new Date().getFullYear();
-    // Остальные скрипты
+
+    // Мобильное меню (простое)
+    function toggleMenu(){
+      const nav = document.querySelector('.nav-links');
+      if(!nav) return;
+      nav.style.display = nav.style.display === 'block' ? 'none' : 'block';
+    }
+
+    // Сообщение после отправки формы
+    function thankYou(){
+      const el = document.getElementById('contact-msg');
+      el.textContent = "Спасибо! Мы свяжемся с вами в ближайшее время.";
+      setTimeout(()=>{ el.textContent=''; }, 6000);
+    }
+
+    // Reveal on scroll
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, {threshold:.12});
+    document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
   </script>
 </body>
 </html>

@@ -165,10 +165,6 @@
         <a href="#pricing">Цены</a>
         <a href="#faq">FAQ</a>
       </nav>
-      <div class="cta">
-        <!-- Оставили один главный CTA -->
-        <button class="btn btn-primary" onclick="document.getElementById('waitlist').showModal()">Список ожидания</button>
-      </div>
     </div>
   </header>
 
@@ -399,7 +395,6 @@
         <strong>Компания</strong>
         <ul style="list-style:none;margin:10px 0 0;padding:0;color:#dfe6ff">
           <li><a href="#contact">Контакты</a></li>
-          <li><a href="#" onclick="document.getElementById('waitlist').showModal()">Список ожидания</a></li>
           <li><a href="#" onclick="alert('Скоро будет')">Политика конфиденциальности</a></li>
         </ul>
       </div>
@@ -412,8 +407,6 @@
   <!-- Waitlist modal -->
   <dialog id="waitlist" style="border:none;border-radius:16px;padding:0;max-width:520px;width:92%">
     <form method="dialog" class="card" style="padding:18px">
-      <h3 style="margin:0 0 6px 0">Список ожидания</h3>
-      <p class="muted" style="margin:0 0 10px 0">Сообщим, когда ваш регион будет открыт.</p>
       <label>E-mail<br><input required class="input" style="width:100%;padding:12px;border:1px solid var(--border);border-radius:14px;background:#0f1730;color:var(--fg)"></label>
       <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:14px">
         <button class="btn" value="cancel">Отмена</button>
